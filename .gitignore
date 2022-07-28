@@ -7,6 +7,8 @@ __pycache__/
 # C extensions
 *.so
 d3rlpy_logs
+.vscode
+*.png
 
 # Distribution / packaging
 .Python

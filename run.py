@@ -3,6 +3,13 @@ from d3rlpy.datasets import get_cartpole
 import numpy as np
 import pickle5 as pickle    # noqa
 import os
+from d3rlpy.algos import CQL
+from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer
+from d3rlpy.metrics.scorer import td_error_scorer
+from d3rlpy.metrics.scorer import average_value_estimation_scorer
+from sklearn.model_selection import train_test_split
+from d3rlpy.metrics.scorer import evaluate_on_environment
+
 
 # so far we have needed: pickle5, stable-baselines3, matplotlib
 
@@ -17,14 +24,8 @@ dataset = d3rlpy.dataset.MDPDataset(
 )
 
 
-from d3rlpy.algos import CQL
-from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer
-from d3rlpy.metrics.scorer import td_error_scorer
-from d3rlpy.metrics.scorer import average_value_estimation_scorer
-from sklearn.model_selection import train_test_split
-
 # setup CQL algorithm
-cql = CQL(use_gpu=False)
+cql = CQL(use_gpu=True, reward_scaler="standard")
 
 # split train and test episodes
 train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)
