@@ -9,6 +9,7 @@ from d3rlpy.metrics.scorer import td_error_scorer
 from d3rlpy.metrics.scorer import average_value_estimation_scorer
 from sklearn.model_selection import train_test_split
 from d3rlpy.metrics.scorer import evaluate_on_environment
+from d3rlpy.metrics.scorer import value_estimation_std_scorer
 
 
 # so far we have needed: pickle5, stable-baselines3, matplotlib
@@ -25,7 +26,8 @@ dataset = d3rlpy.dataset.MDPDataset(
 
 
 # setup CQL algorithm
-cql = CQL(use_gpu=True, reward_scaler="standard")
+cql = CQL(use_gpu=True,
+          reward_scaler="standard")
 
 # split train and test episodes
 train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)
@@ -33,9 +35,10 @@ train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)
 # start training
 cql.fit(train_episodes,
         eval_episodes=test_episodes,
-        n_epochs=2,
+        n_epochs=100,
         scorers={
-            'advantage': discounted_sum_of_advantage_scorer, # smaller is better
+            'advantage': discounted_sum_of_advantage_scorer, # smaller is better,
+            'value_estimation_std': value_estimation_std_scorer, # smaller is better
             'td_error': td_error_scorer, # smaller is better
             'value_scale': average_value_estimation_scorer # smaller is better
         })
