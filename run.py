@@ -15,6 +15,7 @@ import argparse
 
 
 
+def main(config: dict):
     with open(os.getenv("RB_PATH"), "rb") as f:
         sb3_buffer = pickle.load(f, fix_imports=True)
 
@@ -38,10 +39,23 @@ import argparse
     # start training
     cql.fit(train_episodes,
             eval_episodes=test_episodes,
-            n_epochs=100,
+            n_epochs=config["n_epochs"],
             scorers={
             'advantage': discounted_sum_of_advantage_scorer, # smaller is better,
             'value_estimation_std': value_estimation_std_scorer, # smaller is better
                 'td_error': td_error_scorer, # smaller is better
                 'value_scale': average_value_estimation_scorer # smaller is better
             })
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run multiple experiments")
+
+    parser.add_argument("--checkpoint", type=str,
+                        default="/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_navigation_rl/src/actor_last.pth")
+    parser.add_argument("--n_epochs", type=int, default=100)
+    parser.add_argument("--conservative_weight", type=float, default=5.0)
+
+    args = parser.parse_args()
+    config = vars(args)
+    main(config)
