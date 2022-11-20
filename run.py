@@ -11,6 +11,7 @@ from d3rlpy.metrics.scorer import average_value_estimation_scorer
 from sklearn.model_selection import train_test_split
 from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.models.encoders import VectorEncoderFactory
+from d3rlpy.wrappers.sb3 import to_mdp_dataset
 import argparse
 
 
@@ -31,8 +32,8 @@ def main(config: dict):
 
     # setup CQL algorithm
     cql = CQL(use_gpu=True, 
-            actor_encoder_factory=encoder_factory, 
-            critic_encoder_factory=encoder_factory)
+              actor_encoder_factory=encoder_factory, 
+              critic_encoder_factory=encoder_factory)
 
     # split train and test episodes
     train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)

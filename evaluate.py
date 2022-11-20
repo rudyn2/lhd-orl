@@ -2,6 +2,8 @@ from d3rlpy.algos import CQL
 import argparse
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
+
 
 # project-related dependencies
 from lhd_env_nodes.tasks.reach_collision import LHDReachCollision
@@ -42,6 +44,9 @@ def main(config: dict):
     speeds = []
     episodes = config["num_eval_episodes"]
     success = []
+    collisions = []
+    time_outs = []
+    positions, start_positions, target_positions, end_positions = [], [], [], []
 
     for episode in range(episodes):
         ep_observations = []
@@ -50,13 +55,17 @@ def main(config: dict):
         ep_next_observations = []
         ep_dones = []
         ep_speeds = []
-        ep_success = False
+        ep_positions = []
+        ep_success, ep_timeout = False, False
         observation = env.reset()
+        start_positions.append(env.get_position())
+        target_positions.append(env.get_target_position())
         current_step = 0
         while True:
             # perform 1-step in the environment
             action = cql.predict([observation])[0]
             next_observation, reward, done, info = env.step(action)
+            ep_positions.append(env.get_position())
 
             sys.stdout.write(
                 f"Evaluating. Episode: {episode}/{episodes} step={current_step}/{env.get_max_episode_steps()}"
@@ -70,9 +79,11 @@ def main(config: dict):
             ep_speeds.append(info["speed_mag"])
             observation = next_observation
             ep_success = ep_success or info['success']
+            ep_timeout = ep_timeout or info['time_out']
             current_step += 1
 
             if done:
+                end_positions.append(env.get_position())
                 observations.append(ep_observations)
                 actions.append(ep_actions)
                 rewards.append(ep_rewards)
@@ -80,6 +91,9 @@ def main(config: dict):
                 dones.append(ep_dones)
                 speeds.append(ep_speeds)
                 success.append(ep_success)
+                collisions.append(info['collision'])
+                time_outs.append(ep_timeout)
+                positions.append(ep_positions)
                 break
 
     results = dict(
@@ -101,12 +115,41 @@ def main(config: dict):
     to_log.update(calculate_stats(mean_returns, name="mean_return"))
     to_log.update(calculate_stats(speeds, name="speed"))
     to_log["success_rate"] = np.sum(success) / len(success)
+    to_log["collisions"] = np.sum(collisions)
+    to_log["time_outs"] = np.sum(time_outs)
 
     print("-" * 50)
     print("{:<25} {:<10}".format('Key', 'Value'))
     for k, v in to_log.items():
         print("{:<25} {:<10}".format(k, v))
     print("-" * 50)
+    
+    if config["plot"]:
+        fig, ax = plt.subplots(figsize=(22, 14))
+        background = plt.imread("/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_gazebo_env/"
+                                "resources/maps/key_map-skeleton.png")
+        ax.imshow(background, extent=[-60, 60, -40, 40])
+
+        episode_number = 0
+        for trajectory, start_position, target_position, end_position in zip(positions, start_positions,
+                                                                             target_positions, end_positions):
+            trajectory = np.array(trajectory)
+            has_collision = collisions[episode_number]
+            has_timeout = time_outs[episode_number]
+            trajectory_color = "r" if has_collision else "g"
+            trajectory_color = "b" if has_timeout else trajectory_color
+            timeout_tag = "*" if has_timeout else ""
+            if has_collision or has_timeout:
+                ax.plot([target_position[0]], [target_position[1]], "x", label=f"Target_{episode_number}{timeout_tag}")
+                ax.plot([start_position[0]], [start_position[1]], "o", label=f"Start_{episode_number}{timeout_tag}")
+                ax.plot([end_position[0]], [end_position[1]], "*", label=f"End_{episode_number}{timeout_tag}")
+                ax.plot(trajectory[:, 0], trajectory[:, 1], color=trajectory_color)
+            else:
+                ax.plot(trajectory[:, 0], trajectory[:, 1], color=trajectory_color, alpha=0.35)
+            episode_number += 1
+
+        ax.legend()
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -116,6 +159,7 @@ if __name__ == "__main__":
                         default="/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_navigation_rl/src/actor_last.pth")
     parser.add_argument("--max_episode_steps", type=int, default=200)
     parser.add_argument("--num_eval_episodes", type=int, default=100)
+    parser.add_argument("--plot", action="store_true")
 
     args = parser.parse_args()
     config = vars(args)
