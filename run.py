@@ -33,7 +33,8 @@ def main(config: dict):
     # setup CQL algorithm
     cql = CQL(use_gpu=True, 
               actor_encoder_factory=encoder_factory, 
-              critic_encoder_factory=encoder_factory)
+              critic_encoder_factory=encoder_factory,
+          reward_scaler="standard")
 
     # split train and test episodes
     train_episodes, test_episodes = train_test_split(dataset, test_size=0.2)
@@ -41,12 +42,11 @@ def main(config: dict):
     # start training
     cql.fit(train_episodes,
             eval_episodes=test_episodes,
-            n_epochs=100,
+            n_epochs=config["n_epochs"],
             scorers={
-                'advantage': discounted_sum_of_advantage_scorer, # smaller is better
-                'td_error': td_error_scorer, # smaller is better
-                'value_scale': average_value_estimation_scorer # smaller is better
-            })
+            'advantage': discounted_sum_of_advantage_scorer, # smaller is better
+            }
+            )
 
 
 if __name__ == "__main__":
