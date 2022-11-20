@@ -9,6 +9,9 @@ __pycache__/
 *.so
 d3rlpy_logs
 .vscode
+wandb
+runs
+data
 *.png
 
 # Distribution / packaging
