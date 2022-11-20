@@ -1,0 +1,16 @@
+program: run_crr.py
+name: tune_actor_lr
+project: lhd-orl
+method: grid
+command:
+  - ${env}
+  - ${interpreter}
+  - ${program}
+  - "--data"
+  - "data/rb_1000_20221118T0816.pkl"
+  - ${args}
+parameters:
+  actor_lr:
+    values: [1e-4, 3e-4, 3e-5]
+  advantage_type:
+    values: ["mean", "max"]
