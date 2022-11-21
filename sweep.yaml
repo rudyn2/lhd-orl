@@ -11,6 +11,14 @@ command:
   - ${args}
 parameters:
   actor_lr:
-    values: [1e-4, 3e-4, 3e-5]
+    values: [3e-5]
+  critic_lr:
+    values: [3e-4]
   advantage_type:
     values: ["mean", "max"]
+  weight_type:
+    values: ["exp"]
+  encoder_type:
+    values: ["vector", "dense"]
+  n_critics:
+    values: [2]

@@ -1,6 +1,6 @@
 import d3rlpy
 import pickle5 as pickle   
-from d3rlpy.algos import CQL
+from d3rlpy.algos import AWAC
 from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer, \
     td_error_scorer, average_value_estimation_scorer
 from sklearn.model_selection import train_test_split
@@ -26,11 +26,11 @@ def main(config: dict):
     # critic_encoder_factory = VectorEncoderFactory(hidden_units=["758", "512"])
 
     # setup algorithm
-    cql = CQL(reward_scaler="standard",
+    cql = AWAC(reward_scaler="standard",
               actor_learning_rate=config["actor_lr"],
               critic_learning_rate=config["critic_lr"],
-              actor_encoder_factory="vector",
-              critic_encoder_factory="vector",
+              #   actor_encoder_factory="vector",
+              #   critic_encoder_factory=critic_encoder_factory,
               batch_size=config["batch_size"],
               conservative_weight=config["conservative_weight"],
               use_gpu=True)
