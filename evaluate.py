@@ -1,4 +1,4 @@
-from d3rlpy.algos import CQL
+from d3rlpy.algos import CQL, CRR
 import argparse
 import numpy as np
 import sys
@@ -28,12 +28,19 @@ def main(config: dict):
                             dense_reward_weight=10,
                             publish_collision_points=False,
                             publish_info=True,
+                            only_forward=True,
                             verbose=False)
     
     # create model
-    cql = CQL(use_gpu=True)
-    cql.build_with_env(env)
-    cql.load_model(config["checkpoint"])
+    crr = CRR(reward_scaler="standard",
+              actor_encoder_factory="vector",
+              critic_encoder_factory="vector",
+              advantage_type="mean",
+              weight_type="exp",
+              n_critics=1,
+              use_gpu=True)
+    crr.build_with_env(env)
+    crr.load_model(config["checkpoint"])
 
     # evaluate
     observations = []
@@ -63,7 +70,7 @@ def main(config: dict):
         current_step = 0
         while True:
             # perform 1-step in the environment
-            action = cql.predict([observation])[0]
+            action = crr.predict([observation])[0]
             next_observation, reward, done, info = env.step(action)
             ep_positions.append(env.get_position())
 

@@ -29,10 +29,12 @@ def main(config: dict):
     cql = CQL(reward_scaler="standard",
               actor_learning_rate=config["actor_lr"],
               critic_learning_rate=config["critic_lr"],
-              actor_encoder_factory="vector",
-              critic_encoder_factory="vector",
+              actor_encoder_factory=config["encoder_type"],
+              critic_encoder_factory=config["encoder_type"],
               batch_size=config["batch_size"],
               conservative_weight=config["conservative_weight"],
+              alpha_threshold=config["alpha_threshold"],
+              soft_q_backup=config["soft_q_backup"],
               use_gpu=True)
     
     base_config = cql.get_params()
@@ -63,7 +65,7 @@ def main(config: dict):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run CRR experiments")
+    parser = argparse.ArgumentParser(description="Run CQL experiments")
     
     common_params = parser.add_argument_group('common')
     algo_params = parser.add_argument_group('algo')
@@ -72,12 +74,16 @@ if __name__ == "__main__":
     common_params.add_argument("--data", type=str)
     common_params.add_argument("--test_size", type=float, default=0.2)
     common_params.add_argument("--n_epochs", type=int, default=10)
+    common_params.add_argument("--encoder_type", type=str, default="default")
     
     # algo parameters        
     algo_params.add_argument("--actor_lr", type=float, default=3e-4)
     algo_params.add_argument("--critic_lr", type=float, default=3e-4)
-    algo_params.add_argument("--batch_size", type=int, default=100)
-    algo_params.add_argument("--conservative_weight", type=str, default='mean')
+    algo_params.add_argument("--batch_size", type=int, default=256)
+    algo_params.add_argument("--conservative_weight", type=float, default=10.0)
+    algo_params.add_argument("--alpha_threshold", type=float, default=10.0)
+    algo_params.add_argument("--soft_q_backup", type=bool, default=False)
+    
 
     args = parser.parse_args()
     config = vars(args)
