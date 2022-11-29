@@ -1,0 +1,20 @@
+program: run_iql.py
+name: tune_iql
+project: lhd-orl
+method: grid
+command:
+  - ${env}
+  - ${interpreter}
+  - ${program}
+  - "--data"
+  - "data/rb_1000_20221118T0816.pkl"
+  - ${args}
+parameters:
+  expectile:
+    values: [0.7, 0.8, 0.9]
+  weight_temp:
+    values: [1.0, 3.0, 10.0]
+  max_weight:
+    values: [50.0, 100.0, 200.0]
+  encoder_type:
+    values: ["dense"]

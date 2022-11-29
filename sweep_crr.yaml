@@ -1,11 +1,13 @@
 program: run_crr.py
-name: tune_actor_lr
+name: tune_crr_critics
 project: lhd-orl
 method: grid
 command:
   - ${env}
   - ${interpreter}
   - ${program}
+  - "--n_epochs"
+  - "20"
   - "--data"
   - "data/rb_1000_20221118T0816.pkl"
   - ${args}
@@ -19,6 +21,6 @@ parameters:
   weight_type:
     values: ["exp"]
   encoder_type:
-    values: ["vector", "dense"]
+    values: ["dense"]
   n_critics:
-    values: [2]
+    values: [1, 2, 3]
