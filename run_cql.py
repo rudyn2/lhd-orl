@@ -2,7 +2,7 @@ import d3rlpy
 import pickle5 as pickle   
 from d3rlpy.algos import CQL
 from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer, \
-    td_error_scorer, average_value_estimation_scorer
+    td_error_scorer, average_value_estimation_scorer, initial_state_value_estimation_scorer
 from sklearn.model_selection import train_test_split
 import argparse
 import wandb
@@ -20,10 +20,6 @@ def main(config: dict):
         terminals=sb3_buffer.dones.squeeze(1),
     )
     print(f"Buffer loaded with size: {dataset.size()}")
-    
-    # create actor-critic factory
-    # actor_encoder_factory = VectorEncoderFactory(hidden_units=["758", "512"])
-    # critic_encoder_factory = VectorEncoderFactory(hidden_units=["758", "512"])
 
     # setup algorithm
     cql = CQL(reward_scaler="standard",
@@ -58,7 +54,8 @@ def main(config: dict):
             scorers={
                 'advantage': discounted_sum_of_advantage_scorer, # smaller is better,
                 'td_error': td_error_scorer, # smaller is better
-                'value_scale': average_value_estimation_scorer # smaller is better
+                'value_scale': average_value_estimation_scorer, # smaller is better
+                'initial_value': initial_state_value_estimation_scorer
             },
             callback=wandb_callback,
         )

@@ -33,8 +33,8 @@ def main(config: dict):
     
     # create model
     crr = CRR(reward_scaler="standard",
-              actor_encoder_factory="vector",
-              critic_encoder_factory="vector",
+              actor_encoder_factory="dense",
+              critic_encoder_factory="dense",
               advantage_type="mean",
               weight_type="exp",
               n_critics=1,

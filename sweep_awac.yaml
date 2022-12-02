@@ -1,0 +1,18 @@
+program: run_awac.py
+name: tune_awac
+project: lhd-orl
+method: grid
+command:
+  - ${env}
+  - ${interpreter}
+  - ${program}
+  - "--data"
+  - "data/rb_1000_20221118T0816.pkl"
+  - ${args}
+parameters:
+  lam:
+    values: [0.1, 0.5, 1.0, 1.5, 2.0]
+  n_action_samples:
+    values: [1, 2, 4, 8]
+  encoder_type:
+    values: ["dense"]

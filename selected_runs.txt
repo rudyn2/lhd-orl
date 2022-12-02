@@ -1,0 +1,11 @@
+IQL_20221129221227  https://wandb.ai/rudyn/lhd-orl/runs/k7abik3f/logs?workspace=user-rudyn
+CQL_20221129031321  https://wandb.ai/rudyn/lhd-orl/runs/08783p93/logs?workspace=user-rudyn  
+CRR_20221129120804  https://wandb.ai/rudyn/lhd-orl/runs/nwj6afjt/logs?workspace=user-rudyn
+AWAC_20221201143232 https://wandb.ai/rudyn/lhd-orl/runs/y3jvd9bn/logs?workspace=user-rudyn
+
+-------------------------
+reruns:
+IQL_20221202173058  https://wandb.ai/rudyn/lhd-orl/runs/2ulxaol9
+CQL_20221202173237 https://wandb.ai/rudyn/lhd-orl/runs/bg5haawy
+AWAC_20221202175758 https://wandb.ai/rudyn/lhd-orl/runs/2x7ej0uw
+CRR_20221202181459 https://wandb.ai/rudyn/lhd-orl/runs/2buh1ci8

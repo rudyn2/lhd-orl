@@ -2,7 +2,7 @@ import d3rlpy
 import pickle5 as pickle   
 from d3rlpy.algos import AWAC
 from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer, \
-    td_error_scorer, average_value_estimation_scorer
+    td_error_scorer, average_value_estimation_scorer, initial_state_value_estimation_scorer
 from sklearn.model_selection import train_test_split
 import argparse
 import wandb
@@ -20,22 +20,19 @@ def main(config: dict):
         terminals=sb3_buffer.dones.squeeze(1),
     )
     print(f"Buffer loaded with size: {dataset.size()}")
-    
-    # create actor-critic factory
-    # actor_encoder_factory = VectorEncoderFactory(hidden_units=["758", "512"])
-    # critic_encoder_factory = VectorEncoderFactory(hidden_units=["758", "512"])
 
     # setup algorithm
-    cql = AWAC(reward_scaler="standard",
+    awac = AWAC(reward_scaler="standard",
               actor_learning_rate=config["actor_lr"],
               critic_learning_rate=config["critic_lr"],
-              #   actor_encoder_factory="vector",
-              #   critic_encoder_factory=critic_encoder_factory,
+              actor_encoder_factory=config["encoder_type"],
+              critic_encoder_factory=config["encoder_type"],
               batch_size=config["batch_size"],
-              conservative_weight=config["conservative_weight"],
+              lam=config["lam"],
+              n_action_samples=config["n_action_samples"],
               use_gpu=True)
     
-    base_config = cql.get_params()
+    base_config = awac.get_params()
     base_config.update(config)
     base_config = {k: v for k,v in base_config.items() 
                    if isinstance(v, str) or isinstance(v, int) or isinstance(v, float)}
@@ -46,17 +43,18 @@ def main(config: dict):
     # init wandb
     wandb.init(project="lhd-orl",
                config=base_config,
-               tags=['CQL'])
+               tags=['AWAC'])
 
 
     # # start training
-    cql.fit(train_episodes,
+    awac.fit(train_episodes,
             eval_episodes=test_episodes,
             n_epochs=config["n_epochs"],
             scorers={
                 'advantage': discounted_sum_of_advantage_scorer, # smaller is better,
                 'td_error': td_error_scorer, # smaller is better
-                'value_scale': average_value_estimation_scorer # smaller is better
+                'value_scale': average_value_estimation_scorer, # smaller is better
+                'initial_value': initial_state_value_estimation_scorer
             },
             callback=wandb_callback,
         )
@@ -72,12 +70,14 @@ if __name__ == "__main__":
     common_params.add_argument("--data", type=str)
     common_params.add_argument("--test_size", type=float, default=0.2)
     common_params.add_argument("--n_epochs", type=int, default=10)
+    common_params.add_argument("--encoder_type", type=str, default="default")
     
     # algo parameters        
     algo_params.add_argument("--actor_lr", type=float, default=3e-4)
     algo_params.add_argument("--critic_lr", type=float, default=3e-4)
-    algo_params.add_argument("--batch_size", type=int, default=100)
-    algo_params.add_argument("--conservative_weight", type=str, default='mean')
+    algo_params.add_argument("--batch_size", type=int, default=1024)
+    algo_params.add_argument("--lam", type=float, default=1.0)
+    algo_params.add_argument("--n_action_samples", type=int, default=1)
 
     args = parser.parse_args()
     config = vars(args)
