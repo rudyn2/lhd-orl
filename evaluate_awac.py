@@ -1,4 +1,4 @@
-from d3rlpy.algos import CRR
+from d3rlpy.algos import AWAC
 import argparse
 
 # project-related dependencies
@@ -6,7 +6,7 @@ from lhd_env_nodes.tasks.reach_collision import LHDReachCollision
 from evaluate import main
 
 
-def evaluate_crr(config: dict):
+def evaluate_awac(config: dict):
 
     # create environment
     env = LHDReachCollision(max_episode_steps=config["max_episode_steps"],
@@ -19,17 +19,18 @@ def evaluate_crr(config: dict):
                             verbose=False)
     
     # create model
-    crr = CRR(reward_scaler="standard",
-              actor_encoder_factory="dense",
-              critic_encoder_factory="dense",
-              advantage_type="mean",
-              weight_type="exp",
-              n_critics=1,
-              use_gpu=True)
-    crr.build_with_env(env)
-    crr.load_model(config["checkpoint"])
+    awac = AWAC(reward_scaler="standard",
+                actor_encoder_factory="dense",
+                critic_encoder_factory="dense",
+                lam=1.0,
+                n_action_samples=1,      
+                use_gpu=True)
+    awac.build_with_env(env)
+    awac.load_model(config["checkpoint"])
 
-    main(env, crr, config)
+    main(env, awac, config)
+
+    
 
 
 if __name__ == "__main__":
@@ -43,6 +44,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     config = vars(args)
-    evaluate_crr(config)
+    evaluate_awac(config)
 
 
