@@ -17,27 +17,24 @@ def evaluate_awac(config: dict):
                             publish_info=True,
                             direction="forward",
                             verbose=False)
-    
+
     # create model
     awac = AWAC(reward_scaler="standard",
                 actor_encoder_factory="dense",
                 critic_encoder_factory="dense",
                 lam=1.0,
-                n_action_samples=1,      
+                n_action_samples=1,
                 use_gpu=True)
     awac.build_with_env(env)
     awac.load_model(config["checkpoint"])
 
     main(env, awac, config)
 
-    
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Eval actor")
 
-    parser.add_argument("--checkpoint", type=str,
-                        default="/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_navigation_rl/src/actor_last.pth")
+    parser.add_argument("--checkpoint", type=str)
     parser.add_argument("--max_episode_steps", type=int, default=200)
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--plot", action="store_true")
@@ -45,5 +42,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     config = vars(args)
     evaluate_awac(config)
-
-

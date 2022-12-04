@@ -17,7 +17,7 @@ def evaluate_crr(config: dict):
                             publish_info=True,
                             direction="forward",
                             verbose=False)
-    
+
     # create model
     crr = CRR(reward_scaler="standard",
               actor_encoder_factory="dense",
@@ -35,8 +35,7 @@ def evaluate_crr(config: dict):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Eval actor")
 
-    parser.add_argument("--checkpoint", type=str,
-                        default="/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_navigation_rl/src/actor_last.pth")
+    parser.add_argument("--checkpoint", type=str)
     parser.add_argument("--max_episode_steps", type=int, default=200)
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--plot", action="store_true")
@@ -44,5 +43,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     config = vars(args)
     evaluate_crr(config)
-
-

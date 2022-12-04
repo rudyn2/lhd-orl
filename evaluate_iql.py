@@ -6,7 +6,6 @@ from lhd_env_nodes.tasks.reach_collision import LHDReachCollision
 from evaluate import main
 
 
-
 def evaluate_iql(config: dict):
     env = LHDReachCollision(max_episode_steps=config["max_episode_steps"],
                             success_reward=750,
@@ -19,12 +18,12 @@ def evaluate_iql(config: dict):
 
     # create model
     iql = IQL(reward_scaler="standard",
-                actor_encoder_factory="dense",
-                critic_encoder_factory="dense",
-                max_weight=50,
-                weight_temp=10,
-                expectile=0.9,
-                use_gpu=True)
+              actor_encoder_factory="dense",
+              critic_encoder_factory="dense",
+              max_weight=50,
+              weight_temp=10,
+              expectile=0.9,
+              use_gpu=True)
     iql.build_with_env(env)
     iql.load_model(config["checkpoint"])
 
@@ -34,8 +33,7 @@ def evaluate_iql(config: dict):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Eval actor")
 
-    parser.add_argument("--checkpoint", type=str,
-                        default="/home/rudy/lhd_gazebo_ws/src/lhd_navigation_ml/lhd_navigation_rl/src/actor_last.pth")
+    parser.add_argument("--checkpoint", type=str)
     parser.add_argument("--max_episode_steps", type=int, default=200)
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--plot", action="store_true")
@@ -43,5 +41,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     config = vars(args)
     evaluate_iql(config)
-
-
