@@ -1,5 +1,3 @@
-import d3rlpy
-import pickle5 as pickle
 from d3rlpy.algos import CRR
 from d3rlpy.metrics.scorer import discounted_sum_of_advantage_scorer, \
     td_error_scorer, average_value_estimation_scorer, initial_state_value_estimation_scorer
@@ -8,18 +6,11 @@ import argparse
 import wandb
 from wandb_callback import wandb_callback
 from custom_factories import CustomDenseEncoder
+from load_dataset import load_dataset
 
 
 def main(config: dict):
-    with open(config['data'], "rb") as f:
-        sb3_buffer = pickle.load(f, fix_imports=True)
-
-    dataset = d3rlpy.dataset.MDPDataset(
-        observations=sb3_buffer.observations.squeeze(1),
-        actions=sb3_buffer.actions.squeeze(1),
-        rewards=sb3_buffer.rewards.squeeze(1),
-        terminals=sb3_buffer.dones.squeeze(1),
-    )
+    dataset = load_dataset(config["data"])
     print(f"Buffer loaded with size: {dataset.size()}")
 
     # setup algorithm

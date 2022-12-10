@@ -9,3 +9,8 @@ IQL_20221202173058  https://wandb.ai/rudyn/lhd-orl/runs/2ulxaol9
 CQL_20221202173237 https://wandb.ai/rudyn/lhd-orl/runs/bg5haawy
 AWAC_20221202175758 https://wandb.ai/rudyn/lhd-orl/runs/2x7ej0uw
 CRR_20221202181459 https://wandb.ai/rudyn/lhd-orl/runs/2buh1ci8
+
+-----------------------
+Using teleop buffer
+
+merged_200.h5 (IQL): d3rlpy_logs/IQL_20221210164823 https://wandb.ai/rudyn/lhd-orl/runs/nap9lexf
