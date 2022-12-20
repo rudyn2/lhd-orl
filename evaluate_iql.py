@@ -8,9 +8,9 @@ from evaluate import main
 
 def evaluate_iql(config: dict):
     env = LHDReachCollision(max_episode_steps=config["max_episode_steps"],
-                            success_reward=750,
-                            collision_penalization=-1000,
-                            dense_reward_weight=10,
+                            success_reward=100,
+                            collision_penalization=-750,
+                            dense_reward_weight=1,
                             publish_collision_points=False,
                             publish_info=True,
                             direction='forward',

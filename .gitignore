@@ -13,6 +13,7 @@ wandb
 runs
 data
 *.png
+results_*
 
 # Distribution / packaging
 .Python

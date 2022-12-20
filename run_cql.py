@@ -61,13 +61,13 @@ if __name__ == "__main__":
     common_params.add_argument("--data", type=str)
     common_params.add_argument("--test_size", type=float, default=0.2)
     common_params.add_argument("--n_epochs", type=int, default=10)
-    common_params.add_argument("--encoder_type", type=str, default="default")
+    common_params.add_argument("--encoder_type", type=str, default="dense")
 
     # algo parameters
     algo_params.add_argument("--actor_lr", type=float, default=3e-4)
     algo_params.add_argument("--critic_lr", type=float, default=3e-4)
     algo_params.add_argument("--batch_size", type=int, default=256)
-    algo_params.add_argument("--conservative_weight", type=float, default=10.0)
+    algo_params.add_argument("--conservative_weight", type=float, default=1.0)
     algo_params.add_argument("--alpha_threshold", type=float, default=10.0)
     algo_params.add_argument("--soft_q_backup", type=bool, default=False)
 

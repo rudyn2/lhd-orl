@@ -1,0 +1,16 @@
+program: run_iql.py
+name: train_size_exp_iql
+project: lhd-orl
+method: grid
+command:
+  - ${env}
+  - ${interpreter}
+  - ${program}
+  - "--data"
+  - "data/rb_1000_20221118T0816.pkl"
+  - "--n_epochs"
+  - "40"
+  - ${args}
+parameters:
+  test_size:
+    values: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]

@@ -39,6 +39,7 @@ def main(config: dict):
                tags=['CRR'])
 
     # # start training
+    print(config["n_epochs"])
     crr.fit(train_episodes,
             eval_episodes=test_episodes,
             n_epochs=config["n_epochs"],
@@ -62,12 +63,12 @@ if __name__ == "__main__":
     common_params.add_argument("--data", type=str)
     common_params.add_argument("--test_size", type=float, default=0.2)
     common_params.add_argument("--n_epochs", type=int, default=10)
-    common_params.add_argument("--encoder_type", type=str, default="default")
+    common_params.add_argument("--encoder_type", type=str, default="dense")
 
     # algo parameters
-    algo_params.add_argument("--actor_lr", type=float, default=3e-4)
+    algo_params.add_argument("--actor_lr", type=float, default=3e-5)
     algo_params.add_argument("--critic_lr", type=float, default=3e-4)
-    algo_params.add_argument("--batch_size", type=int, default=100)
+    algo_params.add_argument("--batch_size", type=int, default=256)
     algo_params.add_argument("--advantage_type", type=str, default='mean')
     algo_params.add_argument("--weight_type", type=str, default='exp')
     algo_params.add_argument("--n_critics", type=int, default=1)

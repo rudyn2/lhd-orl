@@ -14,3 +14,9 @@ CRR_20221202181459 https://wandb.ai/rudyn/lhd-orl/runs/2buh1ci8
 Using teleop buffer
 
 merged_200.h5 (IQL): d3rlpy_logs/IQL_20221210164823 https://wandb.ai/rudyn/lhd-orl/runs/nap9lexf
+merged_200.h5 (IQL 40 epochs) d3rlpy_logs/IQL_20221210224817 https://wandb.ai/rudyn/lhd-orl/runs/3u7148vd
+merged_400.h5 (IQL 50 epochs) d3rlpy_logs/IQL_20221210233158 https://wandb.ai/rudyn/lhd-orl/runs/oy2054fo
+merged_1000.h5 (IQL 50 epochs) d3rlpy_logs/IQL_20221213201814 https://wandb.ai/rudyn/lhd-orl/runs/30nsiw2s
+merged_1000.h5 (CQL 50 epochs) d3rlpy_logs/CQL_20221217153514 https://wandb.ai/rudyn/lhd-orl/runs/tw5oxb5k
+merged_1000.h5 (CRR 50 epochs) d3rlpy_logs/CRR_20221217171141 https://wandb.ai/rudyn/lhd-orl/runs/3uo4act9
+merged_1000.h5 (AWAC 50 epochs) d3rlpy_logs/AWAC_20221217172941 https://wandb.ai/rudyn/lhd-orl/runs/2kabhh7z

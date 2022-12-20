@@ -1,0 +1,25 @@
+IQL 50 epochs
+--------------------------------------------------, 0.05))
+Key                       Value     
+steps/mean                33.92     
+steps/std                 25.203840977120926
+steps/min                 16        
+steps/max                 200       
+return/mean               692.7876492676471
+return/std                451.3319771870868
+return/min                -1044.2054652771208
+return/max                929.7978494870472
+mean_return/mean          25.51241121415178
+mean_return/std           18.4699816439794
+mean_return/min           -52.21027326385604
+mean_return/max           48.312441808709835
+speed/mean                2.853953759145369
+speed/std                 0.880038902512103
+speed/min                 0.31505254571437336
+speed/max                 4.260687127229513
+success_rate              0.93      
+collisions                6         
+time_outs                 1         
+--------------------------------------------------
+
+
