@@ -31,7 +31,9 @@ def main(config: dict):
                    if isinstance(v, str) or isinstance(v, int) or isinstance(v, float)}
 
     # split train and test episodes
-    train_episodes, test_episodes = train_test_split(dataset, test_size=config["test_size"])
+    train_episodes, test_episodes = train_test_split(dataset, test_size=config['test_size'])
+    print(f"Train episodes: {len(train_episodes)}")
+    print(f"Test episodes: {len(test_episodes)}")
 
     # init wandb
     wandb.init(project="lhd-orl",
@@ -60,7 +62,7 @@ if __name__ == "__main__":
 
     # common parameters
     common_params.add_argument("--data", type=str)
-    common_params.add_argument("--test_size", type=float, default=0.2)
+    common_params.add_argument("--test_size", type=float, default=0.1)
     common_params.add_argument("--n_epochs", type=int, default=10)
     common_params.add_argument("--encoder_type", type=str, default="dense")
 

@@ -1,5 +1,6 @@
 from d3rlpy.algos import CRR
 import argparse
+from custom_factories import CustomDenseEncoder
 
 # project-related dependencies
 from lhd_env_nodes.tasks.reach_collision import LHDReachCollision
@@ -10,9 +11,9 @@ def evaluate_crr(config: dict):
 
     # create environment
     env = LHDReachCollision(max_episode_steps=config["max_episode_steps"],
-                            success_reward=750,
-                            collision_penalization=-1000,
-                            dense_reward_weight=10,
+                            success_reward=100,
+                            collision_penalization=-500,
+                            dense_reward_weight=1,
                             publish_collision_points=False,
                             publish_info=True,
                             direction="forward",
@@ -20,8 +21,8 @@ def evaluate_crr(config: dict):
 
     # create model
     crr = CRR(reward_scaler="standard",
-              actor_encoder_factory="dense",
-              critic_encoder_factory="dense",
+              actor_encoder_factory=CustomDenseEncoder(hidden_units=[512, 512, 512]),
+              critic_encoder_factory=CustomDenseEncoder(hidden_units=[512, 512, 512]),
               advantage_type="mean",
               weight_type="exp",
               n_critics=1,
