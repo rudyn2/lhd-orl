@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 from typing import Sequence, Optional
 
-class DenseEncoder(nn.Module): 
+
+class DenseEncoder(nn.Module):
 
     _observation_shape: Sequence[int]
     _use_batch_norm: bool

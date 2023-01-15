@@ -1,8 +1,9 @@
-from d3rlpy.algos import IQL, AlgoBase
-import argparse
+from d3rlpy.algos import AlgoBase
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
+from datetime import datetime
+import os
 
 
 # project-related dependencies
@@ -21,9 +22,8 @@ def calculate_stats(metric_list: list, name: str):
     }
 
 
-def main(env: LHDEnv, algo: AlgoBase, config: dict):
+def eval(env: LHDEnv, algo: AlgoBase, config: dict, export_folder: str):
 
-    # evaluate
     observations = []
     actions = []
     rewards = []
@@ -83,6 +83,7 @@ def main(env: LHDEnv, algo: AlgoBase, config: dict):
                 time_outs.append(ep_timeout)
                 positions.append(ep_positions)
                 break
+    env.close()
 
     results = dict(
         observations=observations,
@@ -96,8 +97,9 @@ def main(env: LHDEnv, algo: AlgoBase, config: dict):
     mean_returns = [np.mean(e) for e in results["rewards"]]
     steps = [len(e) for e in results["rewards"]]
     speeds = [np.mean(e) for e in results["speeds"]]
-    
+
     to_log = dict()
+    to_log["episodes"] = len(returns)
     to_log.update(calculate_stats(steps, name="steps"))
     to_log.update(calculate_stats(returns, name="return"))
     to_log.update(calculate_stats(mean_returns, name="mean_return"))
@@ -106,12 +108,15 @@ def main(env: LHDEnv, algo: AlgoBase, config: dict):
     to_log["collisions"] = np.sum(collisions)
     to_log["time_outs"] = np.sum(time_outs)
 
-    print("-" * 50)
-    print("{:<25} {:<10}".format('Key', 'Value'))
-    for k, v in to_log.items():
-        print("{:<25} {:<10}".format(k, v))
-    print("-" * 50)
-    
+    date_as_str = datetime.now().strftime('%Y%m%d_%H%M')
+    eval_name = f"eval_results_{date_as_str}"
+
+    with open(os.path.join(export_folder, f"{eval_name}.txt"), "w") as f:
+        f.write("-" * 50 + "\n")
+        f.write("{:<25} {:<10}\n".format('Key', 'Value'))
+        for k, v in to_log.items():
+            f.write("{:<25} {:<10}\n".format(k, v))
+
     if config["plot"]:
         fig, ax = plt.subplots(figsize=(22, 14))
         background = plt.imread(BACKGROUND_IMG_PATH)
@@ -136,5 +141,6 @@ def main(env: LHDEnv, algo: AlgoBase, config: dict):
             episode_number += 1
 
         ax.legend()
-        plt.show()
+        plt.savefig(os.path.join(export_folder, f"{eval_name}.png"))
 
+    print(f"Results saved at {os.path.join(export_folder, f'{eval_name}.txt')}")

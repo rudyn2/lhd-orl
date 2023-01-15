@@ -1,9 +1,10 @@
 from d3rlpy.algos import IQL
 import argparse
+from pathlib import Path
 
 # project-related dependencies
 from lhd_env_nodes.tasks.reach_collision import LHDReachCollision
-from evaluate import main
+from evaluate import eval
 
 
 def evaluate_iql(config: dict):
@@ -14,6 +15,7 @@ def evaluate_iql(config: dict):
                             publish_collision_points=False,
                             publish_info=True,
                             direction='forward',
+                            target_search_limit=300,
                             verbose=False)
 
     # create model
@@ -27,7 +29,8 @@ def evaluate_iql(config: dict):
     iql.build_with_env(env)
     iql.load_model(config["checkpoint"])
 
-    main(env, iql, config)
+    export_folder = str(Path(config["checkpoint"]).parents[0])
+    eval(env, iql, config, export_folder)
 
 
 if __name__ == "__main__":
@@ -37,6 +40,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_episode_steps", type=int, default=200)
     parser.add_argument("--num_eval_episodes", type=int, default=100)
     parser.add_argument("--plot", action="store_true")
+    parser.add_argument("--save", action="store_true")
 
     args = parser.parse_args()
     config = vars(args)
